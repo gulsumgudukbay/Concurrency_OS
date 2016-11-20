@@ -19,7 +19,8 @@ void * insertThread(void * ptr) {
 
     int i = 0;
 
-    for (i = parameter->tid; i < parameter->N; i += parameter->nInsThreads) {
+    for (i = parameter->tid; i < parameter->N; i += parameter->nInsThreads)
+    {
         hash_insert(ht1, i*10000, parameter->tid);
     }
 
@@ -31,9 +32,10 @@ void * deleteThread(void * ptr) {
     Parameter * parameter = (Parameter *) ptr;
 
     int i = 0;
-
     for (i = 2; i < parameter->N; i += parameter->nInsThreads) {
-        while (hash_delete(ht1, i*10000) < 0);
+        printf("trynna delete... k= %d\n", i*10000);
+        while(hash_delete(ht1, i*10000) < 0);
+        printf("ok.\n");
     }
 
     pthread_exit(NULL);

@@ -26,6 +26,7 @@ HashTable *hash_init (int N, int M)
 		return 0;
 	}
 
+	ht = (HashTable*) malloc(sizeof(HashTable));
 	ht->table = (struct node**) malloc( sizeof(struct node*) * N);
 	for( int i = 0; i < N; i++)
 	{
@@ -60,6 +61,7 @@ int hash_insert( HashTable *hp, int k, int v)
 	ins = (struct node*) malloc( sizeof(struct node));
 	ins->key = k;
 	ins->value = v;
+	ins->next = 0;
 
 	if( !hp->table[hash])
 	{
@@ -73,8 +75,9 @@ int hash_insert( HashTable *hp, int k, int v)
 		{
 			if( v == cur->value)
 			{
-				return -1;
 				free(ins);
+				pthread_mutex_unlock( &locks[hash/(hp->M)]);
+				return -1;
 			}
 
 			prev = cur;
@@ -95,15 +98,15 @@ int hash_delete (HashTable *hp, int k) {
 	int hash = k % hp->N;
 	pthread_mutex_lock(&locks[hash/hp->M]);
 
-	printf ("hash_delete called\n");
 	struct node *cur, *nextOfDeleted;
 	cur = hp->table[hash];
 	if(!cur){
 		printf("k is not present!");
+		pthread_mutex_unlock(&locks[hash/hp->M]);
 		return -1;
 	}
 	nextOfDeleted = cur;
-	while(cur != NULL){
+	while(cur){
 		if(cur->key == k){
 			success = 1; // data is found
 			if(cur == hp->table[hash])
@@ -155,21 +158,52 @@ int hash_destroy (HashTable *hp)
 	printf ("hash_destroy called\n");
 	struct node* currnd;
 	struct node* prevnd;
+
 	for(int i = 0; i < K; i++)
 		pthread_mutex_destroy(&locks[i]);
-	for(int i = 0; i < hp->N; i++){
+	free(locks);
+	for(int i = 0; i < hp->N; i++)
+	{
 		currnd = hp->table[i];
 		prevnd = hp->table[i];
-		while(currnd != NULL){
+		while(currnd != NULL)
+		{
 			currnd = prevnd->next;
 			free(prevnd);
 			prevnd = currnd;
 		}
 	}
+
 	return (0);
 }
 
-int main(void) {
-	puts("!!!Hello World!!!"); /* prints !!!Hello World!!! */
+
+int main(void)
+{
+
+	HashTable* hpt = hash_init( 100, 10);
+
+	int val, i, j;
+	hash_insert( hpt, 13, 31);
+	hash_insert( hpt, 113, 69);
+	hash_get( hpt, 113, &val);
+		printf("%d\n", val);
+
+	hash_get( hpt, 13, &val);
+
+	printf("%d\n", val);
+
+	i = hash_delete(hpt, 13);
+	printf("%d \n", i);
+	i = hash_delete(hpt, 13);
+	printf("%d \n", i);
+	i = hash_delete(hpt, 113);
+	printf("%d \n", i);
+	i = hash_delete(hpt, 113);
+	printf("%d \n", i);
+
+	hash_destroy( hpt);
+
+
 	return 0;
 }
