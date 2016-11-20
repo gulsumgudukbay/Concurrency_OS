@@ -16,7 +16,7 @@
 
 HashTable *hash_init (int N, int M) {
 	printf ("hash_init called\n");
-	return (NULL);
+	return (0);
 }
 
 int hash_insert (HashTable *hp, int k, int v) {
