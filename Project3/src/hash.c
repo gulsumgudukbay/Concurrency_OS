@@ -70,8 +70,39 @@ int hash_insert( HashTable *hp, int k, int v)
 
 int hash_delete (HashTable *hp, int k) {
 
+	int success = 0;
+	int hash = k % hp->N;
+	pthread_mutex_lock(&locks[hash/hp->M]);
+
 	printf ("hash_delete called\n");
-	return (0);
+	struct node *cur, *nextOfDeleted;
+	cur = hp->table[hash];
+	if(!cur){
+		printf("k is not present!");
+		return -1;
+	}
+	nextOfDeleted = cur;
+	while(cur != NULL){
+		if(cur->key == k){
+			success = 1; // data is found
+			if(cur == hp->table[hash])
+				hp->table[hash] = cur->next; // change the head
+			else
+				nextOfDeleted->next = cur->next;
+			free(cur);
+			break;
+		}
+		nextOfDeleted = cur;
+		cur = cur->next;
+	}
+
+	pthread_mutex_unlock(&locks[hash/hp->M]);
+
+	if(success == 1)
+		return 0;
+	else
+		return -1;
+
 }
 
 int hash_get (HashTable *hp, int k, int *vptr) {
