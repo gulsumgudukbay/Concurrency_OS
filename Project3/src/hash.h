@@ -20,7 +20,7 @@ struct hash_table {
 	struct node *head;
 	int count;
 };
-
+//test123
 struct node {
 	int key;
 	struct node *next;
