@@ -28,8 +28,7 @@ HashTable *hash_init (int N, int M)
 	ht->table = (struct node**) malloc( sizeof(struct node*) * N);
 	for( int i = 0; i < N; i++)
 	{
-		ht->table[i] = (struct node*) malloc( sizeof( struct node));
-		ht->table[i]->next = 0;
+		ht->table[i] = 0;
 	}
 
 	ht->count = 0;
@@ -50,8 +49,22 @@ HashTable *hash_init (int N, int M)
 	return (ht);
 }
 
-int hash_insert (HashTable *hp, int k, int v) {
-	printf ("hash_insert called\n");
+int hash_insert( HashTable *hp, int k, int v)
+{
+	int hash = k % hp->N;
+	struct node* cur, prev;
+
+	cur = hp->table[k];
+	prev = cur;
+	while( cur)
+	{
+		if( v == cur->value)
+			return -1;
+
+		cur = cur->next;
+		prev = cur;
+	}
+
 	return (0);
 }
 
