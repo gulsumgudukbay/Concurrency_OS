@@ -3,7 +3,7 @@
  Name        : Project3.c
  Author      : Gulsum Gudukbay & Dogukan Yigit Polat
  Version     :
- Copyright   : 
+ Copyright   :
  ============================================================================
  */
 
@@ -14,8 +14,12 @@
 
 // remove printf debug statements at the end
 
-HashTable *hash_init (int N, int M) {
+HashTable *hash_init (int N, int M)
+{
 	printf ("hash_init called\n");
+
+	hash_table
+
 	return (0);
 }
 
