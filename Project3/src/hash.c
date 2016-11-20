@@ -100,6 +100,7 @@ int hash_delete (HashTable *hp, int k) {
 
 	struct node *cur, *nextOfDeleted;
 	cur = hp->table[hash];
+	printLL(cur);
 	if(!cur){
 		printf("k is not present!");
 		pthread_mutex_unlock(&locks[hash/hp->M]);
