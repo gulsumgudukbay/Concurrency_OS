@@ -15,14 +15,13 @@
 #define MIN_M 10
 #define MAX_M 1000
 
-struct hash_table
-{
+struct hash_table {
 	// put your table definition here
 	struct node *head;
 	int count;
 };
 
-struct node{
+struct node {
 	int key;
 	struct node *next;
 };
