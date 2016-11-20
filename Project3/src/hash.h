@@ -21,10 +21,18 @@ struct hash_table {
 	int count;
 };
 //test123
-struct node {
+
+struct node{
 	int key;
 	struct node *next;
 };
+
+struct hash_table
+{
+	int count;
+	struct node** table;
+};
+
 
 typedef struct hash_table HashTable;
 
