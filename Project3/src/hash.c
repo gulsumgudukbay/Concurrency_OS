@@ -22,7 +22,6 @@ HashTable *hash_init (int N, int M)
 	K = N / M;
 	if( N > MAX_N || N < MIN_N || M > MAX_M || M < MIN_M || N % M != 0 || K > 100 || K < 1)
 	{
-		printf( "camda yaraqshow\n");
 		return 0;
 	}
 
@@ -42,12 +41,10 @@ HashTable *hash_init (int N, int M)
 	{
 		if( pthread_mutex_init( &locks[i], 0))
 		{
-			printf( "yaraq\n");
 			return 0;
 		}
 	}
 
-	printf( "hash_init done.\n");
 	return (ht);
 }
 
@@ -73,7 +70,7 @@ int hash_insert( HashTable *hp, int k, int v)
 		prev = cur;
 		while( cur)
 		{
-			if( v == cur->value)
+			if( k == cur->key)
 			{
 				free(ins);
 				pthread_mutex_unlock( &locks[hash/(hp->M)]);
@@ -89,6 +86,8 @@ int hash_insert( HashTable *hp, int k, int v)
 
 	pthread_mutex_unlock( &locks[hash/(hp->M)]);
 
+
+
 	return 0;
 }
 
@@ -100,9 +99,7 @@ int hash_delete (HashTable *hp, int k) {
 
 	struct node *cur, *nextOfDeleted;
 	cur = hp->table[hash];
-	printLL(cur);
 	if(!cur){
-		printf("k is not present!");
 		pthread_mutex_unlock(&locks[hash/hp->M]);
 		return -1;
 	}
@@ -156,7 +153,6 @@ int hash_get (HashTable *hp, int k, int *vptr)
 
 int hash_destroy (HashTable *hp)
 {
-	printf ("hash_destroy called\n");
 	struct node* currnd;
 	struct node* prevnd;
 
@@ -183,42 +179,11 @@ void printLL(struct node* head){
 		printf("\n%s", "Contents of linkedlist:\n");
 		struct node *cur = head;
 		while (cur != NULL){
-			printf("Key: %d\t", cur->key);
-			printf("Value: %d\t", cur->value);
+			printf("Key: %d     ", cur->key);
+			printf("Value: %d     \n", cur->value);
 			cur = cur->next;
 		}
 	}
 	else
 		printf("\n%s", "NO LL\n");
-}
-
-
-int main(void)
-{
-
-	HashTable* hpt = hash_init( 100, 10);
-
-	int val, i, j;
-	hash_insert( hpt, 13, 31);
-	hash_insert( hpt, 113, 69);
-	hash_get( hpt, 113, &val);
-		printf("%d\n", val);
-
-	hash_get( hpt, 13, &val);
-
-	printf("%d\n", val);
-
-	i = hash_delete(hpt, 13);
-	printf("%d \n", i);
-	i = hash_delete(hpt, 13);
-	printf("%d \n", i);
-	i = hash_delete(hpt, 113);
-	printf("%d \n", i);
-	i = hash_delete(hpt, 113);
-	printf("%d \n", i);
-
-	hash_destroy( hpt);
-
-
-	return 0;
 }
