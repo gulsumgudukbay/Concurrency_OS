@@ -37,4 +37,6 @@ int hash_get (HashTable *hp, int k, int *vptr);
 int hash_destroy (HashTable *hp);
 
 
+//utility functions
+
 #endif /* HASH_H */
