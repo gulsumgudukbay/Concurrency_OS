@@ -14,16 +14,34 @@
 
 // remove printf debug statements at the end
 
+
 HashTable *hash_init (int N, int M)
 {
-	printf ("hash_init called\n");
+	HashTable* ht;
+	K = N / M;
+	if( N > MAX_N || N < MIN_N || M > MAX_M || M < MIN_M || N % M != 0 || K > 100 || K < 1)
+	{
+		printf( "camda yaraqshow\n");
+		return 0;
+	}
 
-	hash_table.table = (struct node**) malloc( sizeof(struct node*)*N);
-	hash_table.count = 0;
+	ht->table = (struct node**) malloc( sizeof(struct node*) * N);
+	for( int i = 0; i < N; i++)
+	{
+		ht->table[i] = (struct node*) malloc( sizeof( struct node));
+	}
 
-	
+	ht->count = 0;
+	ht->N = N;
+	ht->M = M;
 
-	return (0);
+
+	for( int i = 0; i < K; i++) {
+		
+	}
+
+	printf( "hash_init done.\n");
+	return (ht);
 }
 
 int hash_insert (HashTable *hp, int k, int v) {

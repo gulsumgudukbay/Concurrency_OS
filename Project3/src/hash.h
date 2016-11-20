@@ -15,13 +15,6 @@
 #define MIN_M 10
 #define MAX_M 1000
 
-struct hash_table {
-	// put your table definition here
-	struct node *head;
-	int count;
-};
-//test123
-
 struct node{
 	int key;
 	struct node *next;
@@ -29,14 +22,18 @@ struct node{
 
 struct hash_table
 {
+	int N;
+	int M;
 	int count;
 	struct node** table;
 };
-
-
 typedef struct hash_table HashTable;
 
-int n;
+//data
+pthread_mutex_t* locks;
+int K;
+
+//func
 HashTable *hash_init (int N, int M);
 int hash_insert (HashTable *hp, int k, int v);
 int hash_delete (HashTable *hp, int k);
