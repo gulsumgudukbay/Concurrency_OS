@@ -40,6 +40,7 @@ int hash_insert (HashTable *hp, int k, int v);
 int hash_delete (HashTable *hp, int k);
 int hash_get (HashTable *hp, int k, int *vptr);
 int hash_destroy (HashTable *hp);
+void printLL(struct node* head);
 
 
 //utility functions
