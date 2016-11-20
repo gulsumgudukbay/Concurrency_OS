@@ -177,6 +177,20 @@ int hash_destroy (HashTable *hp)
 	return (0);
 }
 
+void printLL(struct node* head){
+	if(head!=NULL){
+		printf("\n%s", "Contents of linkedlist:\n");
+		struct node *cur = head;
+		while (cur != NULL){
+			printf("Key: %d\t", cur->key);
+			printf("Value: %d\t", cur->value);
+			cur = cur->next;
+		}
+	}
+	else
+		printf("\n%s", "NO LL\n");
+}
+
 
 int main(void)
 {
