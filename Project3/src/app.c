@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include "pthread.h"
 #include "hash.h"
-//khjgkujg
 HashTable *ht1; // space allocated inside library
 
 typedef struct PARAMETER {
