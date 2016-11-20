@@ -28,24 +28,43 @@ HashTable *hash_init (int N, int M)
 	ht->table = (struct node**) malloc( sizeof(struct node*) * N);
 	for( int i = 0; i < N; i++)
 	{
-		ht->table[i] = (struct node*) malloc( sizeof( struct node));
+		ht->table[i] = 0;
 	}
 
 	ht->count = 0;
 	ht->N = N;
 	ht->M = M;
 
-
-	for( int i = 0; i < K; i++) {
-		
+	locks = (pthread_mutex_t*) malloc( sizeof( pthread_mutex_t) * K);
+	for( int i = 0; i < K; i++)
+	{
+		if( pthread_mutex_init( &locks[i], 0))
+		{
+			printf( "yaraq\n");
+			return 0;
+		}
 	}
 
 	printf( "hash_init done.\n");
 	return (ht);
 }
 
-int hash_insert (HashTable *hp, int k, int v) {
-	printf ("hash_insert called\n");
+int hash_insert( HashTable *hp, int k, int v)
+{
+	int hash = k % hp->N;
+	struct node* cur, prev;
+
+	cur = hp->table[k];
+	prev = cur;
+	while( cur)
+	{
+		if( v == cur->value)
+			return -1;
+
+		cur = cur->next;
+		prev = cur;
+	}
+
 	return (0);
 }
 
@@ -60,8 +79,8 @@ int hash_get (HashTable *hp, int k, int *vptr) {
 	return (0);
 }
 
-int hash_destroy (HashTable *hp) {
-
+int hash_destroy (HashTable *hp)
+{
 	printf ("hash_destroy called\n");
 	struct node* currnd;
 	struct node* prevnd;

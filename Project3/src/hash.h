@@ -17,6 +17,7 @@
 
 struct node{
 	int key;
+	int value;
 	struct node *next;
 };
 
