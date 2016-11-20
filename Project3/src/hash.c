@@ -9,6 +9,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include "hash.h"
 
@@ -52,20 +53,40 @@ HashTable *hash_init (int N, int M)
 int hash_insert( HashTable *hp, int k, int v)
 {
 	int hash = k % hp->N;
-	struct node* cur, prev;
+	struct node* cur, *prev, *ins;
 
-	cur = hp->table[k];
-	prev = cur;
-	while( cur)
+	pthread_mutex_lock( &locks[hash/(hp->M)]);
+
+	ins = (struct node*) malloc( sizeof(struct node));
+	ins->key = k;
+	ins->value = v;
+
+	if( !hp->table[hash])
 	{
-		if( v == cur->value)
-			return -1;
-
-		cur = cur->next;
+		hp->table[hash] = ins;
+	}
+	else
+	{
+		cur = hp->table[hash];
 		prev = cur;
+		while( cur)
+		{
+			if( v == cur->value)
+			{
+				return -1;
+				free(ins);
+			}
+
+			prev = cur;
+			cur = cur->next;
+		}
+		prev->next = ins;
+
 	}
 
-	return (0);
+	pthread_mutex_unlock( &locks[hash/(hp->M)]);
+
+	return 0;
 }
 
 int hash_delete (HashTable *hp, int k) {
@@ -74,9 +95,28 @@ int hash_delete (HashTable *hp, int k) {
 	return (0);
 }
 
-int hash_get (HashTable *hp, int k, int *vptr) {
-	printf ("hash_get called\n");
-	return (0);
+int hash_get (HashTable *hp, int k, int *vptr)
+{
+	int hash = k % hp->N;
+	struct node* cur, *prev, *ins;
+
+	pthread_mutex_lock( &locks[hash/(hp->M)]);
+
+	cur = hp->table[hash];
+	while( cur)
+	{
+		if(cur->key == k)
+		{
+			*vptr = cur->value;
+			pthread_mutex_unlock( &locks[hash/(hp->M)]);
+			return 0;
+		}
+
+		cur = cur-> next;
+	}
+
+	pthread_mutex_unlock( &locks[hash/(hp->M)]);
+	return -1;
 }
 
 int hash_destroy (HashTable *hp)
