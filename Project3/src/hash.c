@@ -18,7 +18,10 @@ HashTable *hash_init (int N, int M)
 {
 	printf ("hash_init called\n");
 
-	hash_table
+	hash_table.table = (struct node**) malloc( sizeof(struct node*)*N);
+	hash_table.count = 0;
+
+	
 
 	return (0);
 }
