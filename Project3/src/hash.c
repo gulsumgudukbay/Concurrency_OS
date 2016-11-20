@@ -122,6 +122,19 @@ int hash_get (HashTable *hp, int k, int *vptr)
 int hash_destroy (HashTable *hp)
 {
 	printf ("hash_destroy called\n");
+	struct node* currnd;
+	struct node* prevnd;
+	for(int i = 0; i < K; i++)
+		pthread_mutex_destroy(&locks[i]);
+	for(int i = 0; i < hp->N; i++){
+		currnd = hp->table[i];
+		prevnd = hp->table[i];
+		while(currnd != NULL){
+			currnd = prevnd->next;
+			free(prevnd);
+			prevnd = currnd;
+		}
+	}
 	return (0);
 }
 
