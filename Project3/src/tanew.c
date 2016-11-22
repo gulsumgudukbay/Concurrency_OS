@@ -54,7 +54,7 @@ void* studentThread( int studentID)
   pthread_exit(0); //maybe one day... :(
 }
 
-void* taThread()
+void* taThread() //koca yurekli!
 {
   while(1)
   {
