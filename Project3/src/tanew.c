@@ -13,35 +13,45 @@ int waker;
 
 pthread_mutex_t sleeplock;
 pthread_mutex_t chairlock;
+pthread_mutex_t sleepm;
 pthread_cond_t ta_sleeping = PTHREAD_COND_INITIALIZER;
 pthread_cond_t ta_helping = PTHREAD_COND_INITIALIZER;
+
 
 void* studentThread( int studentID)
 {
   while(1)
   {
+    sleep( rand() % 6 + 1);
+
     //wake up ta if sleeping
     pthread_mutex_lock( &sleeplock);
     if( ta_state == 0)
     {
       ta_state = 1;
       waker = studentID;
+      printf("Student %d awakes TA\n", studentID);
+      pthread_cond_signal( &ta_sleeping);
+      pthread_mutex_unlock( &sleeplock);
+      continue;
     }
-    pthread_cond_signal( &ta_sleeping);
     pthread_mutex_unlock( &sleeplock);
 
     //is there chair available
     pthread_mutex_lock( &chairlock);
-    if( chair_available)
+    if( available_chairs)
     {
       //take a seat
-      available_chairs++;
+      chairs[ 3 - available_chairs] = studentID;
+      available_chairs--;
+
+      printf("Student %d sits and waits\n", studentID);
     }
-    pthread_mutex_lock( &chairlock);
+    pthread_mutex_unlock( &chairlock);
+
 
     //sıranın gelmesini beqle.
     //get help from ta
-
 
 
   }
@@ -51,37 +61,40 @@ void* studentThread( int studentID)
 
 void* taThread()
 {
-  int more_ppl;
-
-  more_ppl = 0;
   while(1)
   {
     //wake up and help
     pthread_mutex_lock( &sleeplock);
     while( ta_state == 0)
       pthread_cond_wait( &ta_sleeping, &sleeplock);
-    printf("TA helps to student %d\n", studentID);
-    sleep(1);
+    printf("TA helps to student %d\n", waker);
     pthread_mutex_unlock( &sleeplock);
 
     //check chairs
-    pthread_mutex_lock( &chairlock);
-    if( available_chairs)
+
+    printf("TA checks chairs\n");
+    while( available_chairs < 3)
     {
-      
+      pthread_mutex_lock( &chairlock);
+      printf("TA helps to student %d\n", chairs[0]);
+      chairs[0] = chairs[1];
+      chairs[1] = chairs[2];
+      chairs[2] = -1;
+      available_chairs++;
+      pthread_mutex_unlock( &chairlock);
+      printf("TA checks chairs\n");
     }
-    pthread_cond_signal( &ta_helping);
-    pthread_mutex_unlock( &chairlock);
 
     //sleep
     pthread_mutex_lock( &sleeplock);
     ta_state = 0;
-    pthread_cond_signal( &ta_sleeping);
+    printf("TA takes a nap\n\n");
+    sleep(1);
     pthread_mutex_unlock( &sleeplock);
   }
-
   pthread_exit(0); //never gonna happen for ya!
 }
+
 
 int main()
 {
@@ -89,12 +102,12 @@ int main()
   pthread_t ta;
 
   //init
-  waiting = (int*) malloc( sizeof(int) * N);
   memset( chairs, -1, N);
   available_chairs = 3;
   ta_state = 0;
-
   pthread_mutex_init( &sleeplock, 0);
+  pthread_mutex_init( &chairlock, 0);
+  pthread_mutex_init( &sleepm, 0);
 
   students = (pthread_t*) malloc( sizeof(pthread_t) * N);
   for( int i = 0; i < N; i++)
