@@ -49,11 +49,6 @@ void* studentThread( int studentID)
     }
     pthread_mutex_unlock( &chairlock);
 
-
-    //sıranın gelmesini beqle.
-    //get help from ta
-
-
   }
 
   pthread_exit(0); //maybe one day... :(
