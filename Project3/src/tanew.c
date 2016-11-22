@@ -14,8 +14,11 @@ int waker;
 pthread_mutex_t sleeplock;
 pthread_mutex_t chairlock;
 pthread_mutex_t sleepm;
+pthread_mutex_t dusunceli_ta;
+
 pthread_cond_t ta_sleeping = PTHREAD_COND_INITIALIZER;
 pthread_cond_t ta_helping = PTHREAD_COND_INITIALIZER;
+pthread_cond_t koca_yurekli = PTHREAD_COND_INITIALIZER;
 
 
 void* studentThread( int studentID)
