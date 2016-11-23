@@ -26,7 +26,7 @@ void* studentThread( int studentID)
 {
   while(1)
   {
-    sleep( rand() % 6 + 1);
+    sleep( rand() % 20 + 1);
 
     pthread_mutex_lock( &helplock[ studentID]);
     helped[ studentID] = 0;
@@ -91,6 +91,7 @@ void* taThread() //koca yurekli!
       pthread_cond_wait( &ta_sleeping, &sleeplock);
     pthread_mutex_unlock( &sleeplock);
     printf("TA helps to student %d\n", waker);
+    sleep(1);
 
     //signal student
     //
@@ -123,6 +124,7 @@ void* taThread() //koca yurekli!
       //end signal
 
       pthread_mutex_unlock( &chairlock);
+      sleep(1);
 
 
       printf("TA checks chairs\n");
@@ -132,7 +134,6 @@ void* taThread() //koca yurekli!
     pthread_mutex_lock( &sleeplock);
     ta_state = 0;
     printf("TA takes a nap\n");
-    sleep(1);
     pthread_mutex_unlock( &sleeplock);
   }
   pthread_exit(0); //never gonna happen for ya!
